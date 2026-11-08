@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -53,11 +54,15 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'product_code' => 'required|string|max:255|unique:products,product_code',
             'name' => 'required|string|max:255',
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'price' => 'required|numeric|min:1',
             'stock' => 'required|numeric|min:0',
             'min_stock' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
         ]);
+
+        $validatedData['image_path'] = $request->file('image')->store('products', 'public');
+        unset($validatedData['image']);
 
         $product = Product::create($validatedData);
 
@@ -88,6 +93,7 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'product_code' => 'required|string|max:255|unique:products,product_code,'.$id,
             'name' => 'required|string|max:255',
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'price' => 'required|numeric|min:1',
             'stock' => 'required|numeric|min:0',
             'min_stock' => 'required|numeric|min:0',
@@ -95,6 +101,18 @@ class ProductController extends Controller
         ]);
 
         $product = Product::findOrFail($id);
+        unset($validatedData['image']);
+
+        if ($request->hasFile('image')) {
+            $newImagePath = $request->file('image')->store('products', 'public');
+
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+
+            $validatedData['image_path'] = $newImagePath;
+        }
+
         $product->update($validatedData);
 
         return redirect()->route('produk')->with('success', 'Product updated successfully.');
@@ -106,6 +124,11 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
+
+        if ($product->image_path) {
+            Storage::disk('public')->delete($product->image_path);
+        }
+
         $product->delete();
 
         return redirect()->route('produk')->with('success', 'Product deleted successfully.');

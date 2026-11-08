@@ -61,7 +61,7 @@
         <form class="pos-product ${product.stock <= 0 ? 'out-of-stock' : ''}" method="POST" action="/kasir/keranjang" data-cart-add>
           <input type="hidden" name="product_id" value="${product.id}">
           <button type="submit" class="border-0 bg-transparent p-0 w-100 text-start" ${product.stock <= 0 ? 'disabled' : ''}>
-            <div class="product-art tone-blue"><i class="bi bi-box-seam"></i></div>
+            <img class="product-art product-image" src="${escapeHtml(product.image_url)}" alt="${escapeHtml(product.name)}">
             <div class="product-name">${escapeHtml(product.name)}</div>
             <div class="product-code">${escapeHtml(product.code)}</div>
             <div class="product-price">${formatCurrency(product.price)}</div>
@@ -76,7 +76,7 @@
       cartCount.textContent = data.cart_count;
       cartBody.innerHTML = data.cart_items.length ? data.cart_items.map((item) => `
         <div class="cart-item">
-          <div class="table-avatar tone-blue"><i class="bi bi-box-seam"></i></div>
+          <img class="table-avatar product-image" src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.name)}">
           <div class="cart-item-main">
             <div class="cart-item-name">${escapeHtml(item.name)}</div>
             <div class="cart-item-price">${formatCurrency(item.price)}</div>
@@ -154,17 +154,29 @@
       const form = document.getElementById('productForm');
       const modalTitle = productModal.querySelector('.modal-title');
       if (!form) return;
+      const imageInput = form.elements.image;
+      const imagePreview = document.getElementById('productImagePreview');
       form.reset();
       const data = trigger && trigger.dataset.product ? JSON.parse(trigger.dataset.product) : null;
       document.getElementById('productId').value = data ? data.id : '';
       document.getElementById('productMethod').value = data ? 'PUT' : 'POST';
       form.action = data ? '/produk/' + data.id : '/produk';
+      imageInput.required = !data;
+      imagePreview.classList.toggle('d-none', !data);
+      imagePreview.src = data ? data.image_url : '';
       const fields = { product_code: 'product_code', name: 'name', category_id: 'category_id', price: 'price', stock: 'stock', min_stock: 'min_stock' };
       Object.keys(fields).forEach(function (key) {
         const input = form.elements[key];
         if (input && data && data[fields[key]] !== undefined) input.value = data[fields[key]];
         modalTitle.textContent = data ? 'Edit Produk' : 'Tambah Produk';
       });
+
+      imageInput.addEventListener('change', function () {
+        const [file] = imageInput.files;
+        if (!file) return;
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreview.classList.remove('d-none');
+      }, { once: true });
     });
   }
 

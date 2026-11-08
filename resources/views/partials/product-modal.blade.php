@@ -1,7 +1,7 @@
 <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form id="productForm" method="POST" action="{{ url('/produk') }}">
+            <form id="productForm" method="POST" action="{{ url('/produk') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="id" id="productId">
                 <input type="hidden" name="_method" id="productMethod" value="POST">
@@ -21,6 +21,12 @@
                         <div class="col-md-6">
                             <label class="form-label">Nama produk</label>
                             <input name="name" class="form-control" required placeholder="Nama barang">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Foto produk</label>
+                            <input name="image" type="file" class="form-control" accept="image/jpeg,image/png,image/webp" required>
+                            <div class="form-text">JPG, PNG, atau WEBP maksimal 2 MB.</div>
+                            <img id="productImagePreview" class="product-form-preview d-none mt-2" alt="Pratinjau foto produk">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Kategori</label>

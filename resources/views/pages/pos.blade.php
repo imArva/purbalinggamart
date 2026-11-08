@@ -17,7 +17,7 @@
       <form class="pos-product {{ $product->stock <= 0 ? 'out-of-stock' : '' }}" method="POST" action="{{ url('/kasir/keranjang') }}" data-cart-add>@csrf
         <input type="hidden" name="product_id" value="{{ $product->id }}">
         <button type="submit" class="border-0 bg-transparent p-0 w-100 text-start" {{ $product->stock <= 0 ? 'disabled' : '' }}>
-          <div class="product-art tone-blue"><i class="bi bi-box-seam"></i></div><div class="product-name">{{ $product->name }}</div><div class="product-code">{{ $product->code }}</div><div class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div><div class="stock-small"><span>Stok {{ $product->stock }}</span>@if($product->stock <= $product->min_stock)<span class="text-warning"><i class="bi bi-exclamation-circle"></i></span>@endif</div><span class="add-plus"><i class="bi bi-plus-lg"></i></span>
+          <img class="product-art product-image" src="{{ $product->image_url }}" alt="{{ $product->name }}"><div class="product-name">{{ $product->name }}</div><div class="product-code">{{ $product->code }}</div><div class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</div><div class="stock-small"><span>Stok {{ $product->stock }}</span>@if($product->stock <= $product->min_stock)<span class="text-warning"><i class="bi bi-exclamation-circle"></i></span>@endif</div><span class="add-plus"><i class="bi bi-plus-lg"></i></span>
         </button>
       </form>
       @empty <div class="empty-state empty-filter"><i class="bi bi-search"></i><strong>Produk tidak ditemukan</strong><span>Produk akan ditampilkan setelah data tersedia.</span></div> @endforelse
@@ -29,7 +29,7 @@
     </div>
     <div class="cart-body" id="cartBody">
       @forelse($cartItems as $item)
-      <div class="cart-item"><div class="table-avatar tone-blue"><i class="bi bi-box-seam"></i></div><div class="cart-item-main"><div class="cart-item-name">{{ $item->product->name ?? $item['name'] ?? 'Produk' }}</div><div class="cart-item-price">Rp {{ number_format($item->price ?? 0, 0, ',', '.') }}</div>
+      <div class="cart-item"><img class="table-avatar product-image" src="{{ $item->product->image_url }}" alt="{{ $item->product->name }}"><div class="cart-item-main"><div class="cart-item-name">{{ $item->product->name ?? $item['name'] ?? 'Produk' }}</div><div class="cart-item-price">Rp {{ number_format($item->price ?? 0, 0, ',', '.') }}</div>
       <div class="cart-item-bottom"><form class="qty-control" method="POST" action="{{ url('/kasir/keranjang/kuantitas') }}" data-cart-quantity>@csrf<input type="hidden" name="product_id" value="{{ $item->product_id }}"><button name="change" value="-1">−</button><span>{{ $item->quantity }}</span><button name="change" value="1">+</button></form><span class="line-total">Rp {{ number_format(($item->price ?? 0) * ($item->quantity ?? 0), 0, ',', '.') }}</span></div></div></div>
       @empty <div class="empty-cart"><i class="bi bi-basket"></i><strong>Keranjang masih kosong</strong><span>Pilih produk untuk memulai transaksi.</span></div> @endforelse
     </div>

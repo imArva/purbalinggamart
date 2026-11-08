@@ -20,3 +20,4 @@
 .pos-product .add-plus{background:#0758c9}
 .invoice-brand .invoice-logo{background:#e8f2ff;color:#0758c9}
 .invoice-brand h3{color:#0758c9}
+.product-image{object-fit:cover;display:block}.product-art.product-image{width:100%;height:128px;border-radius:12px}.table-avatar.product-image{object-fit:cover}.product-form-preview{width:72px;height:72px;border-radius:10px;object-fit:cover;border:1px solid var(--line)}

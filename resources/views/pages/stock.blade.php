@@ -83,9 +83,7 @@
                     <tr>
                         <td>
                             <div class="product-cell">
-                                <div class="table-avatar tone-blue">
-                                    <i class="bi bi-box-seam"></i>
-                                </div>
+                                <img class="table-avatar product-image" src="{{ $product->image_url }}" alt="{{ $product->name }}">
                                 <div>
                                     <div class="table-title">{{ $product->name }}</div>
                                     <div class="table-sub">{{ $product->product_code }}</div>

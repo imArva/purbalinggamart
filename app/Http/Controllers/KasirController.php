@@ -204,6 +204,7 @@ class KasirController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'code' => $product->code,
+                'image_url' => $product->image_url,
                 'price' => (float) $product->price,
                 'stock' => $product->stock,
                 'min_stock' => $product->min_stock,
@@ -211,6 +212,7 @@ class KasirController extends Controller
             'cart_items' => $cartItems->map(fn (object $item): array => [
                 'product_id' => $item->product_id,
                 'name' => $item->product->name,
+                'image_url' => $item->product->image_url,
                 'price' => $item->price,
                 'quantity' => $item->quantity,
             ])->values()->all(),
@@ -243,7 +245,7 @@ class KasirController extends Controller
         $validated = $request->validate([
             'payment_amount' => ['required', 'numeric', 'min:0'],
         ]);
-        
+
         $userId = auth()->id() ?? User::query()
             ->where('is_active', true)
             ->value('id');
